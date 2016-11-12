@@ -6,7 +6,7 @@ def connect(ip_address):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
     sock.connect((ip_address, 6038))
     return sock
-dmx = [connect('18.224.0.36'), connect('18.224.0.40')]
+dmx = [connect(socket.gethostbyname(host)) for host in ['tepilepsy.mit.edu', 'lepitepsy.mit.edu']]
 
 # Allocate a buffer for transmitted packets and fill it with magic
 xmit = zeros(681, dtype='ubyte')
