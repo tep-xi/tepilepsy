@@ -1,4 +1,4 @@
-import cv, time
+import cv2, time
 from tepwall.widget import Widget
 from numpy import sin, cos, square, linspace
 
@@ -20,5 +20,5 @@ class Shimmer(Widget):
         panel[...,0] = (c*cos(a*t)*square(x-cos(d*t))+b*t+
                         c*sin(a*t)*square(y-sin(e*t)))%180
         panel[...,1:] = 255
-        cv.CvtColor(panel, panel, cv.CV_HSV2RGB)
+        cv2.cvtColor(panel, cv2.COLOR_HSV2RGB, panel)
 
