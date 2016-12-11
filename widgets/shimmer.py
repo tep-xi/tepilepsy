@@ -16,7 +16,7 @@ class Shimmer(Widget):
         self.i = (linspace(-1, 1, panel.shape[1]),
                   linspace(-1, 1, panel.shape[0])[:,None])
     def update(self, panel):
-        (a, b, c, d, e), (x, y), t = self.consts, self.i, time.time()
+        (a, b, c, d, e, saturation, brightness), (x, y), t = self.consts, self.i, time.time()
         panel[...,0] = (c*cos(a*t)*square(x-cos(d*t))+b*t+
                         c*sin(a*t)*square(y-sin(e*t)))%180
         panel[...,1] = saturation
