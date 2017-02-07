@@ -24,7 +24,7 @@ class Widget:
         pass
 
 def _execute(widget_pipe, go):
-    import dmx, numpy
+    import tepwall.dmx, numpy
     panel = numpy.zeros((36,60,3), dtype='ubyte')
     while go.wait():
         try:
@@ -33,7 +33,7 @@ def _execute(widget_pipe, go):
             widget.update(panel)
             while go.is_set() and not widget_pipe.poll(1./fps):
                 widget.update(panel)
-                dmx.display(panel)
+                tepwall.dmx.display(panel)
             widget.unload()
         except Exception as e:
             print(e)
