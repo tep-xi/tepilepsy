@@ -53,7 +53,7 @@ class Mandelbrot(Widget):
         newtime = time.time()
         tdiff = newtime - oldtime
         npixels = panel.shape[0] * panel.shape[1]
-        if len(mset[0]) < npixels / 20 or len(boundary) == 0 or len(mset[0]) > npixels / 2:
+        if 50 * len(mset[0]) < npixels or len(boundary) == 0 or 2 * len(mset[0]) > npixels:
             self.vals = self.bounds, newtime, True
         else:
             zoomn = boundary.pop()
