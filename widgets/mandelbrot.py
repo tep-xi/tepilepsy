@@ -22,6 +22,10 @@ def mandelbrot(c, max_iters):
 def numiters(xr, yr):
     return int(223.0 / numpy.sqrt(0.001 + 2.0 * min(xr, yr)))
 
+@jit(cache=True, nopython=True, nogil=True)
+def p2v(p, xs, ys):
+    return (xs[p[1]-1], ys[p[0]-1])
+
 class Mandelbrot(Widget):
     def __init__(self, scale=0.99, bounds=((-2.0, 2.0), (-1.2, 1.2)), dtype=numpy.float64):
         self.scale = scale
@@ -63,13 +67,15 @@ class Mandelbrot(Widget):
             self.max_iters = numiters(bounds[0][1] - bounds[0][0], bounds[1][1] - bounds[1][0])
         else:
             zoomn = boundary.pop()
+            zoomnd = p2v(zoomn, xs, ys)
             if oldzoom is not None:
-                oldzoomd = (xs[oldzoom[1]-1], ys[oldzoom[0]-1])
                 for point in boundary:
-                    pointd = (xs[point[1]-1], ys[point[0]-1])
-                    if dist2(point, oldzoom) < dist2(zoomn, oldzoom):
+                    pointd = p2v(point, xs, ys)
+                    if dist2(pointd, oldzoom) < dist2(zoomnd, oldzoom):
                         zoomn = point
-            xz, yz = xs[zoomn[1]], ys[zoomn[0]]
+                        zoomnd = pointd
+                zoomnd = 0.3 * numpy.array(zoomnd) + 0.7 * numpy.array(oldzoom)
+            (xz, yz) = zoomnd
             self.bounds = ((xz - xr2, xz + xr2), (yz - yr2, yz + yr2))
-            self.oldzoom = zoomn
+            self.oldzoom = zoomnd
             self.max_iters = numiters(xr, yr)
