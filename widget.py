@@ -13,7 +13,7 @@ To use the widget architecture:
 4. Call 'widget.stop' to halt rendering
 """
 
-class Widget:
+class Widget(object):
     def __init__(self, *args, **kwargs):
         pass
     def load(self, shape):
