@@ -1,4 +1,5 @@
 from multiprocessing import Process, Event, Pipe
+import numpy, tepwall.dmx
 
 # Important note: Python multiprocessing is VERY STRANGE.  Once a
 # widget is started, its state is not communicated back to the main
@@ -23,29 +24,36 @@ class Widget(object):
     def unload(self):
         pass
 
-def _execute(widget_pipe, go):
-    import tepwall.dmx, numpy
-    panel = numpy.zeros((36,60,3), dtype='ubyte')
-    while go.wait():
-        try:
-            widget, fps = widget_pipe.recv()
-            widget.load(panel)
-            widget.update(panel)
-            while go.is_set() and not widget_pipe.poll(1./fps):
+class Tepilepsy(object):
+    def __init__(self):
+        pass
+    def start(self, widget, fps=30):
+        pass
+    def stop(self):
+        pass
+
+class Tepwall(Tepilepsy):
+    def __init__(self):
+        (self._recv, self._send), self._go = Pipe(False), Event()
+        self._proc = Process(target=self._execute, args=(self._recv, self._go))
+        self._proc.daemon = True
+        self._proc.start()
+    def _execute(self, widget_pipe, go):
+        panel = numpy.zeros((36,60,3), dtype='ubyte')
+        while go.wait():
+            try:
+                widget, fps = widget_pipe.recv()
+                widget.load(panel)
                 widget.update(panel)
-                tepwall.dmx.display(panel)
-            widget.unload()
-        except Exception as e:
-            print(e)
-            go.clear()
-
-(_recv, _send), _go = Pipe(False), Event()
-_proc = Process(target=_execute, args=(_recv, _go))
-_proc.daemon = True
-_proc.start()
-
-def start(widget, fps=30):
-    _send.send((widget, fps))
-    _go.set()
-def stop():
-    _go.clear()
+                while go.is_set() and not widget_pipe.poll(1./fps):
+                    widget.update(panel)
+                    tepwall.dmx.display(panel)
+                widget.unload()
+            except Exception as e:
+                print(e)
+                go.clear()
+    def start(self, widget, fps=30):
+        self._send.send((widget, fps))
+        self._go.set()
+    def stop(self):
+        self._go.clear()
