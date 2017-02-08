@@ -15,6 +15,12 @@ xmit[:8],xmit[17],xmit[21],xmit[-1] = [4,1,220,74,1,0,8,1],209,2,191
 # Display the array-like object "panel" that has shape (36,60,3).
 def display(panel):
     for i in range(30):
-        xmit[16], x, y, k = 1+(i%16), 12*(i//10), 6*(i%10), 2*(i%2)-1
+        if i == 4:
+            j = 30
+        elif i == 5:
+            j = 31
+        else:
+            j = i
+        xmit[16], x, y, k = 1+(j%16), 12*(i//10), 6*(i%10), 2*(i%2)-1
         xmit[24:240] = rollaxis(asarray(panel)[x:x+12,y:y+6][::-1,::k],1).ravel()
-        dmx[i//16].sendall(xmit)
+        dmx[j//16].sendall(xmit)
