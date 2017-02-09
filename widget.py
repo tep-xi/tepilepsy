@@ -1,5 +1,5 @@
 from multiprocessing import Process, Event, Pipe
-import numpy, tepwall.dmx
+import numpy, tepilepsy.dmx
 
 # Important note: Python multiprocessing is VERY STRANGE.  Once a
 # widget is started, its state is not communicated back to the main
@@ -47,7 +47,7 @@ class Tepwall(Tepilepsy):
                 widget.update(panel)
                 while go.is_set() and not widget_pipe.poll(1./fps):
                     widget.update(panel)
-                    tepwall.dmx.display(panel)
+                    tepilepsy.dmx.display(panel)
                 widget.unload()
             except Exception as e:
                 print(e)

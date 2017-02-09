@@ -1,4 +1,4 @@
-from tepwall.widget import *
+from tepilepsy.widget import *
 import matplotlib.pyplot as plt
 import matplotlib.animation as ani
 import numpy

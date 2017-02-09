@@ -2,7 +2,7 @@ from bdflib import reader
 from numpy import array, arange, zeros
 import sys, os
 
-fonts, font_dir = {}, "/Users/honig/Library/Python/tepwall/fonts/"
+fonts, font_dir = {}, "/usr/share/fonts"
 for bdf in os.listdir(font_dir):
     fonts[os.path.splitext(bdf)[0]] = reader.read_bdf(open(os.path.join(font_dir, bdf)))
 
