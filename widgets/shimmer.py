@@ -1,5 +1,5 @@
 import cv2, time
-from tepwall.widget import Widget
+from tepilepsy.widget import Widget
 from numpy import sin, cos, square, linspace
 
 class Shimmer(Widget):

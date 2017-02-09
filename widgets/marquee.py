@@ -1,5 +1,5 @@
-from tepwall.widget import Widget
-from tepwall import text
+from tepilepsy.widget import Widget
+from tepilepsy import text
 
 class Marquee(Widget):
     def __init__(self, font, string, rate=1, color=[255,255,255]):

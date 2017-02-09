@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from tepwall.widget import Widget
+from tepilepsy.widget import Widget
 import pygame, numpy
 
 class Pygame(Widget):

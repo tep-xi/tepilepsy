@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from tepwall.widget import Widget
+from tepilepsy.widget import Widget
 
 class Static(Widget):
     def __init__(self, image):

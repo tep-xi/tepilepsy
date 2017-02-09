@@ -1,5 +1,5 @@
 import cv2, time, numpy, math
-from tepwall.widget import Widget
+from tepilepsy.widget import Widget
 from numpy import linspace
 from numba import jit
 
