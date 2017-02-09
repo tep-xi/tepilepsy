@@ -16,6 +16,9 @@ class Plot(Tepilepsy):
         anim = ani.FuncAnimation(fig, self.update, interval=1000./fps)
         plt.show()
     def update(self, *args):
-        self.widget.update(self.arr)
+        try:
+            self.widget.update(self.arr)
+        except Exception as e:
+            print(e)
         self.im.set_array(self.arr)
         return self.im
