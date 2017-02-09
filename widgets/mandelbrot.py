@@ -27,11 +27,12 @@ def p2v(p, xs, ys):
     return (xs[p[1]-1], ys[p[0]-1])
 
 class Mandelbrot(Widget):
-    def __init__(self, scale=0.99, bounds=((-2.0, 2.0), (-1.2, 1.2)), dtype=numpy.float64):
+    def __init__(self, scale=0.975, bounds=((-2.0, 2.0), (-1.2, 1.2)), dtype=numpy.float64, samples=4):
         self.scale = scale
         self.ogbounds = bounds
         self.bounds = bounds
         self.dtype = dtype
+        self.samples = samples
         self.oldzoom = None
         self.max_iters = numiters(bounds[0][1] - bounds[0][0], bounds[1][1] - bounds[1][0])
     def load(self, panel):
@@ -39,20 +40,22 @@ class Mandelbrot(Widget):
     @jit(cache=True)
     def update(self, panel):
         (xb, yb), oldzoom = self.bounds, self.oldzoom
-        xs = linspace(xb[0], xb[1], panel.shape[1], dtype=self.dtype)
-        ys = linspace(yb[0], yb[1], panel.shape[0], dtype=self.dtype)
+        xs, xstep = linspace(xb[0], xb[1], panel.shape[1], dtype=self.dtype, retstep=True)
+        ys, ystep = linspace(yb[0], yb[1], panel.shape[0], dtype=self.dtype, retstep=True)
         mset = (set([-1]), set([-1]))
         for i in range(panel.shape[0]):
             for j in range(panel.shape[1]):
-                iters = mandelbrot(xs[j] + 1j * ys[i], self.max_iters)
-                if iters == self.max_iters:
-                    mset[0].add((i, j))
-                    mset[1].update([(i+1, j), (i, j+1), (i-1, j), (i, j-1)])
-                    panel[i, j, :] = (0, 0, 0)
-                else:
-                    #if iters > localmaxiters * 19 / 20:
-                    #    mset[1].update([(i+1, j), (i, j+1), (i-1, j), (i, j-1)])
-                    panel[i, j, :] = (180 * iters / self.max_iters, 192 + 63 * iters / self.max_iters, 255)
+                panel[i, j, :] = (0, 0, 0)
+                pts = (xstep, ystep) * (numpy.random.random((self.samples, 2)) - 0.5) + (xs[j], ys[i])
+                for pt in pts:
+                    iters = mandelbrot(pt[0] + 1j * pt[1], self.max_iters)
+                    if iters == self.max_iters:
+                        mset[0].add((i, j))
+                        mset[1].update([(i+1, j), (i, j+1), (i-1, j), (i, j-1)])
+                    else:
+                        #if iters > localmaxiters * 19 / 20:
+                        #    mset[1].update([(i+1, j), (i, j+1), (i-1, j), (i, j-1)])
+                        panel[i, j, :] += (numpy.array((180 * iters / self.max_iters, 192 + 63 * iters / self.max_iters, 255)) / self.samples).astype('uint8')
         cv2.cvtColor(panel, cv2.COLOR_HSV2RGB, panel)
         boundary = mset[1] - mset[0]
         npixels = panel.shape[0] * panel.shape[1]
